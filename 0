@@ -13,9 +13,7 @@ FileUtils.mkdir_p(dir)
 
 # https://stackoverflow.com/questions/1682120/read-a-file-in-chunks-in-ruby
 
-download_url = lambda { |rel_path|
-  "https://raw.githubusercontent.com/#{repo}/master/#{rel_path}"
-}
+download_root = "https://raw.githubusercontent.com/#{repo}/master"
 
 class File
   def each_chunk(chunk_size)
@@ -36,7 +34,7 @@ download_script = <<-EOS
 #!/bin/bash
 
 # usage
-# curl #{download_url.call('download.sh')} | OUTPUT=/path/to/output sh
+# curl #{download_root}/download.sh | OUTPUT=/path/to/output sh
 
 set -ex
 
@@ -44,7 +42,7 @@ dir=$(mktemp -d)
 
 (
 cd $dir
-seq 0 #{file_count - 1} | xargs -n1 -P10 bash -c 'curl -O -s #{download_url.call('')}/$0 > $0'
+seq 0 #{file_count - 1} | xargs -n1 -P10 bash -c 'curl -O -s #{download_root}/$0 > $0'
 cat $(seq 0 #{file_count - 1}) > output
 )
 
