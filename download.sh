@@ -7,7 +7,7 @@ set -ex
 
 dir=$(mktemp -d)
 cd $dir
-curl -L https://raw.githubusercontent.com/contribu/ghlargefiletest/master/0 > 0
+seq 0 0 | xargs -n1 -P10 bash -c 'curl -O -s https://raw.githubusercontent.com/contribu/ghlargefiletest/master//$0 > $0'
 
-cat 0 > $OUTPUT
+cat $(seq 0 0) > $OUTPUT
 rm -rf $dir

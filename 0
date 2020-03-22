@@ -32,12 +32,6 @@ File.open(src, "rb") do |f|
   }
 end
 
-download_command = (0..file_count - 1).map do |idx|
-  "curl -L #{download_url.call(idx)} > #{idx}"
-end.join("\n")
-
-files_str = (0..file_count - 1).to_a.join(' ')
-
 download_script = <<-EOS
 #!/bin/bash
 
@@ -48,9 +42,9 @@ set -ex
 
 dir=$(mktemp -d)
 cd $dir
-#{download_command}
+seq 0 #{file_count - 1} | xargs -n1 -P10 bash -c 'curl -O -s #{download_url.call('')}/$0 > $0'
 
-cat #{files_str} > $OUTPUT
+cat $(seq 0 #{file_count - 1}) > $OUTPUT
 rm -rf $dir
 EOS
 
