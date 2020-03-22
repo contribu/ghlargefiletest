@@ -6,8 +6,13 @@
 set -ex
 
 dir=$(mktemp -d)
+
+(
 cd $dir
 seq 0 0 | xargs -n1 -P10 bash -c 'curl -O -s https://raw.githubusercontent.com/contribu/ghlargefiletest/master//$0 > $0'
+cat $(seq 0 0) > output
+)
 
-cat $(seq 0 0) > $OUTPUT
+mv "${dir}/output" $OUTPUT
 rm -rf $dir
+
